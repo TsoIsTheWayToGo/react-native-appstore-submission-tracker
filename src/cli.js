@@ -359,7 +359,7 @@ process.on('uncaughtException', (error) => {
   process.exit(1)
 })
 
-process.on('unhandledRejection', (reason, promise) => {
+process.on('unhandledRejection', (reason, _promise) => {
   console.error(chalk.red('\n💥 Unhandled promise rejection:'))
   console.error(chalk.red(reason))
   console.error(chalk.gray('\nPlease report this issue at:'))

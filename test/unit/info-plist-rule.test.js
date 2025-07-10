@@ -1,5 +1,5 @@
 const InfoPlistValidationRule = require('../../src/rules/info-plist-rule')
-const { ValidationResult, SEVERITY } = require('../../src/utils/constants')
+const { SEVERITY } = require('../../src/utils/constants')
 
 describe('InfoPlistValidationRule', () => {
   let rule

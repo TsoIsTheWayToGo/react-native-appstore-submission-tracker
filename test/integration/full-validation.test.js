@@ -47,7 +47,7 @@ describe('Full Integration Tests', () => {
     fs.writeFileSync(path.join(appDir, 'Info.plist'), plistWithIssues)
 
     const validator = new AppStoreValidator({ verbose: false })
-    const report = await validator.validate(appDir)
+    await validator.validate(appDir)
 
     // Should catch multiple issues
     expect(validator.results.length).toBeGreaterThan(3)

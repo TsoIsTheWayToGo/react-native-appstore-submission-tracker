@@ -40,7 +40,7 @@ class ValidationRule {
     this.description = description
   }
 
-  async validate(validator) {
+  async validate(_validator) {
     throw new Error('Subclasses must implement validate method')
   }
 }

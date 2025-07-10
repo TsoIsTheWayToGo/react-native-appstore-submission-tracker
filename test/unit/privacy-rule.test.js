@@ -1,5 +1,4 @@
 const PrivacyComplianceRule = require('../../src/rules/privacy-rule')
-const { SEVERITY } = require('../../src/utils/constants')
 
 describe('PrivacyComplianceRule', () => {
   let rule
@@ -24,7 +23,7 @@ describe('PrivacyComplianceRule', () => {
 
     const results = await rule.validate(mockValidator)
 
-    expect(results.some((r) => r.message.includes('Privacy manifest'))).toBe(true)
+    expect(results.some(r => r.message.includes('Privacy manifest'))).toBe(true)
   })
 
   test('should validate permission string length', async() => {
@@ -35,6 +34,6 @@ describe('PrivacyComplianceRule', () => {
 
     const results = await rule.validate(mockValidator)
 
-    expect(results.some((r) => r.message.includes('description too short'))).toBe(true)
+    expect(results.some(r => r.message.includes('description too short'))).toBe(true)
   })
 })
