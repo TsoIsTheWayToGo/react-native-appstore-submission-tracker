@@ -1,0 +1,21 @@
+{
+  "appName": "My React Native App",
+  "description": "A comprehensive mobile application built with React Native that provides users with amazing functionality and seamless user experience across iOS devices.",
+  "keywords": ["react-native", "mobile", "productivity", "ios"],
+  "category": "Productivity",
+  "privacyPolicyUrl": "https://myapp.com/privacy",
+  "supportUrl": "https://myapp.com/support",
+  "marketingUrl": "https://myapp.com",
+  "version": "1.0.0",
+  "buildNumber": "1",
+  "copyright": "© 2024 My Company",
+  "ageRating": "4+",
+  "languages": ["en-US"],
+  "features": [
+    "Account creation and management",
+    "Data synchronization",
+    "Push notifications",
+    "Camera integration"
+  ]
+}
+
