@@ -1,27 +1,27 @@
-const { ValidationRule, ValidationResult, SEVERITY } = require('../utils/constants')
+const { ValidationRule, ValidationResult, SEVERITY } = require('../utils/constants');
 
 class AssetsRule extends ValidationRule {
   constructor() {
-    super('assets', 'Validates app icons and required assets')
+    super('assets', 'Validates app icons and required assets');
   }
 
   async validate(validator) {
-    const results = []
-    const plist = validator.getInfoPlist()
+    const results = [];
+    const plist = validator.getInfoPlist();
 
-    if (!plist) return results
+    if (!plist) return results;
 
-    // Check for app icon
+    // App icon reminder - changed from CRITICAL to INFO
     if (!plist.CFBundleIconFiles && !plist.CFBundleIconName) {
       results.push(
         new ValidationResult(
           this.name,
-          SEVERITY.CRITICAL,
-          'No app icon configuration found',
-          'App icon is required for App Store submission',
-          'Add app icon to your project and configure in Info.plist'
+          SEVERITY.INFO,
+          'App icon configuration reminder',
+          'Ensure your app has properly configured icons before App Store submission',
+          'Verify app icon appears correctly on device and configure CFBundleIconName or CFBundleIconFiles in Info.plist if needed. Most React Native projects handle this automatically through Xcode project settings.'
         )
-      )
+      );
     }
 
     // Check for launch screen
@@ -34,11 +34,11 @@ class AssetsRule extends ValidationRule {
           'Launch screen is required for modern iOS apps',
           'Add LaunchScreen.storyboard or configure UILaunchImages'
         )
-      )
+      );
     }
 
-    return results
+    return results;
   }
 }
 
-module.exports = AssetsRule
+module.exports = AssetsRule;

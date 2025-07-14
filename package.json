@@ -1,5 +1,5 @@
 {
-  "name": "react-native-appstore-submission-tracker",
+  "name": "rn-appstore-validator",
   "version": "1.0.0",
   "description": "A comprehensive validation tool that checks React Native builds against Apple App Store submission requirements to catch potential rejection issues before submission.",
   "main": "src/validator.js",
@@ -23,7 +23,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yourusername/react-native-appstore-submission-tracker.git"
+    "url": "git+https://github.com/TsoIsTheWayToGo/rn-appstore-validator.git"
   },
   "keywords": [
     "react-native",
@@ -43,9 +43,9 @@
   "author": "Your Name <your.email@example.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/yourusername/react-native-appstore-submission-tracker/issues"
+    "url": "https://github.com/TsoIsTheWayToGo/rn-appstore-validator/issues"
   },
-  "homepage": "https://github.com/yourusername/react-native-appstore-submission-tracker#readme",
+  "homepage": "https://github.com/TsoIsTheWayToGo/rn-appstore-validator#readme",
   "dependencies": {
     "chalk": "^4.1.2",
     "glob": "^8.0.3",

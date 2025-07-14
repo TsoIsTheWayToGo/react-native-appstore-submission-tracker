@@ -1,8 +1,8 @@
 # React Native App Store Submission Tracker
 
-[![npm version](https://badge.fury.io/js/react-native-appstore-submission-tracker.svg)](https://badge.fury.io/js/react-native-appstore-submission-tracker)
-[![CI](https://github.com/yourusername/react-native-appstore-submission-tracker/workflows/CI/badge.svg)](https://github.com/yourusername/react-native-appstore-submission-tracker/actions)
-[![codecov](https://codecov.io/gh/yourusername/react-native-appstore-submission-tracker/branch/main/graph/badge.svg)](https://codecov.io/gh/yourusername/react-native-appstore-submission-tracker)
+[![npm version](https://badge.fury.io/js/rn-appstore-validator.svg)](https://badge.fury.io/js/rn-appstore-validator)
+[![CI](https://github.com/TsoIsTheWayToGo/rn-appstore-validator/workflows/CI/badge.svg)](https://github.com/TsoIsTheWayToGo/rn-appstore-validator/actions)
+[![codecov](https://codecov.io/gh/yourusername/rn-appstore-validator/branch/main/graph/badge.svg)](https://codecov.io/gh/yourusername/rn-appstore-validator)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 > **Catch App Store rejection issues before submission** 🍎
@@ -25,16 +25,16 @@ This tool catches these issues **before submission**, saving you days of review 
 
 ### NPM/Yarn
 ```bash
-npm install -g react-native-appstore-submission-tracker
+npm install -g rn-appstore-validator
 # or
-yarn global add react-native-appstore-submission-tracker
+yarn global add rn-appstore-validator
 ```
 
 ### Local Installation
 ```bash
-npm install --save-dev react-native-appstore-submission-tracker
+npm install --save-dev rn-appstore-validator
 # or  
-yarn add --dev react-native-appstore-submission-tracker
+yarn add --dev rn-appstore-validator
 ```
 
 ## 🛠 Quick Start
@@ -56,7 +56,7 @@ rn-appstore-validator validate ./MyApp.ipa --metadata ./metadata.json --verbose
 # GitHub Actions
 - name: Validate App Store Compliance
   run: |
-    npx react-native-appstore-submission-tracker validate ./MyApp.ipa --output junit
+    npx rn-appstore-validator validate ./MyApp.ipa --output junit
 ```
 
 ## 📋 What It Checks
@@ -125,7 +125,7 @@ module.exports = {
 
 ### Programmatic Usage
 ```javascript
-const { AppStoreValidator } = require('react-native-appstore-submission-tracker');
+const { AppStoreValidator } = require('rn-appstore-validator');
 
 const validator = new AppStoreValidator({
   verbose: true,
@@ -167,7 +167,7 @@ jobs:
           
       - name: Validate App Store Compliance
         run: |
-          npx react-native-appstore-submission-tracker validate \
+          npx rn-appstore-validator validate \
             ./ios/build/MyApp.ipa \
             --metadata ./app-metadata.json \
             --output junit \
@@ -187,7 +187,7 @@ jobs:
 validate_appstore:
   stage: test
   script:
-    - npm install -g react-native-appstore-submission-tracker
+    - npm install -g rn-appstore-validator
     - rn-appstore-validator validate ./MyApp.ipa --output json > validation.json
   artifacts:
     reports:
@@ -202,7 +202,7 @@ validate_appstore:
     inputs:
     - content: |
         #!/bin/bash
-        npm install -g react-native-appstore-submission-tracker
+        npm install -g rn-appstore-validator
         rn-appstore-validator validate $BITRISE_IPA_PATH --verbose
 ```
 
@@ -212,7 +212,7 @@ Create custom validation rules for your specific needs:
 
 ```javascript
 // custom-rules/company-branding-rule.js
-const { ValidationRule, ValidationResult, SEVERITY } = require('react-native-appstore-submission-tracker');
+const { ValidationRule, ValidationResult, SEVERITY } = require('rn-appstore-validator');
 
 class CompanyBrandingRule extends ValidationRule {
   constructor() {
@@ -262,8 +262,8 @@ See [CONTRIBUTING.md](./docs/CONTRIBUTING.md) for detailed guidelines.
 
 ### Quick Start for Contributors
 ```bash
-git clone https://github.com/yourusername/react-native-appstore-submission-tracker.git
-cd react-native-appstore-submission-tracker
+git clone https://github.com/TsoIsTheWayToGo/rn-appstore-validator.git
+cd rn-appstore-validator
 npm install
 npm test
 npm run lint
@@ -291,7 +291,7 @@ npm run lint
 
 ## 📄 License
 
-MIT © [Your Name](https://github.com/yourusername)
+MIT © [TsoIsTheWayToGo](https://github.com/TsoIsTheWayToGo)
 
 ## 🙏 Acknowledgments
 
