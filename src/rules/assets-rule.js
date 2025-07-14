@@ -19,7 +19,8 @@ class AssetsRule extends ValidationRule {
           SEVERITY.INFO,
           'App icon configuration reminder',
           'Ensure your app has properly configured icons before App Store submission',
-          'Verify app icon appears correctly on device and configure CFBundleIconName or CFBundleIconFiles in Info.plist if needed. Most React Native projects handle this automatically through Xcode project settings.'
+          'Verify app icon appears correctly on device and configure CFBundleIconName or CFBundleIconFiles in Info.plist if needed. Most React Native projects handle this automatically through Xcode project settings.',
+          'manual'
         )
       )
     }

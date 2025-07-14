@@ -67,7 +67,7 @@ class AppStoreValidator {
       new rules.AccountDeletionRule(),
       new rules.PermissionsRule(),
       new rules.AssetsRule(),
-      new rules.CodeSigningRule(),
+      // new rules.CodeSigningRule(),
       new rules.LocalizationRule(),
       new rules.PerformanceRule(),
       new rules.ContentPolicyRule(),

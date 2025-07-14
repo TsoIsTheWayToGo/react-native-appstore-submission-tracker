@@ -48,13 +48,13 @@ Run your iOS build process using Xcode, Fastlane, or EAS. Make sure you have an 
 
 ```bash
 # Replace this path with the path to your actual .ipa file
-rn-appstore-validator validate ./path/to/MyApp.ipa
+npx rn-appstore-validator validate ./path/to/MyApp.ipa
 ```
 
 ### 3. Optional: Add Metadata and Verbose Output
 
 ```bash
-rn-appstore-validator validate ./path/to/MyApp.ipa \
+npx rn-appstore-validator validate ./path/to/MyApp.ipa \
   --metadata ./metadata.json \
   --verbose
 ```
@@ -114,7 +114,7 @@ HIGH ISSUES (2):
 Validates your React Native build against App Store submission requirements.
 
 ```bash
-rn-appstore-validator validate <buildPath> [options]
+npx rn-appstore-validator validate <buildPath> [options]
 ```
 
 **Parameters:**
