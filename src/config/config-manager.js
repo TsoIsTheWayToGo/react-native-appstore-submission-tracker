@@ -1,8 +1,8 @@
 // src/config/config-manager.js
 
-const fs = require('fs');
-const path = require('path');
-const chalk = require('chalk');
+const fs = require('fs')
+const path = require('path')
+const chalk = require('chalk')
 
 class ConfigManager {
   constructor() {
@@ -35,88 +35,88 @@ class ConfigManager {
       },
       failOn: 'high',
       customRules: []
-    };
+    }
   }
 
   loadConfig(configPath) {
-    let userConfig = {};
+    let userConfig = {}
 
     // Try to load user config file
     if (configPath) {
-      userConfig = this.loadConfigFile(configPath);
+      userConfig = this.loadConfigFile(configPath)
     } else {
       // Look for config in common locations
       const commonPaths = [
         'validator.config.js',
         '.validator.config.js',
         'appstore-validator.config.js'
-      ];
+      ]
 
       for (const configFile of commonPaths) {
         if (fs.existsSync(configFile)) {
-          userConfig = this.loadConfigFile(configFile);
-          console.log(chalk.gray(`Using config file: ${configFile}`));
-          break;
+          userConfig = this.loadConfigFile(configFile)
+          console.log(chalk.gray(`Using config file: ${configFile}`))
+          break
         }
       }
     }
 
     // Merge with defaults
-    return this.mergeConfig(this.defaultConfig, userConfig);
+    return this.mergeConfig(this.defaultConfig, userConfig)
   }
 
   loadConfigFile(configPath) {
     try {
-      delete require.cache[path.resolve(configPath)];
-      return require(path.resolve(configPath));
+      delete require.cache[path.resolve(configPath)]
+      return require(path.resolve(configPath))
     } catch (error) {
       console.warn(
         chalk.yellow(`Warning: Could not load config file ${configPath}: ${error.message}`)
-      );
-      return {};
+      )
+      return {}
     }
   }
 
   mergeConfig(defaultConfig, userConfig) {
-    const merged = JSON.parse(JSON.stringify(defaultConfig));
+    const merged = JSON.parse(JSON.stringify(defaultConfig))
 
     // Deep merge rules
     if (userConfig.rules) {
-      Object.assign(merged.rules, userConfig.rules);
+      Object.assign(merged.rules, userConfig.rules)
     }
 
     // Merge arrays
     if (userConfig.ignore) {
-      merged.ignore = [...merged.ignore, ...userConfig.ignore];
+      merged.ignore = [...merged.ignore, ...userConfig.ignore]
     }
 
     if (userConfig.customRules) {
-      merged.customRules = [...merged.customRules, ...userConfig.customRules];
+      merged.customRules = [...merged.customRules, ...userConfig.customRules]
     }
 
     // Merge objects
     if (userConfig.context) {
-      Object.assign(merged.context, userConfig.context);
+      Object.assign(merged.context, userConfig.context)
     }
 
     if (userConfig.output) {
-      Object.assign(merged.output, userConfig.output);
+      Object.assign(merged.output, userConfig.output)
     }
 
     // Direct overwrites
     if (userConfig.failOn) {
-      merged.failOn = userConfig.failOn;
+      merged.failOn = userConfig.failOn
     }
 
-    return merged;
+    return merged
   }
 
   createDefaultConfig(outputPath = 'validator.config.js', force = false) {
     if (fs.existsSync(outputPath) && !force) {
       console.log(
         chalk.yellow(`Config file already exists at ${outputPath}. Use --force to overwrite.`)
-      );
-      return false;
+      )
+      return false
     }
 
     const configTemplate = `module.exports = {
@@ -168,16 +168,16 @@ class ConfigManager {
   customRules: [
     // './custom-rules/company-branding-rule.js'
   ]
-};`;
+};`
 
     try {
-      fs.writeFileSync(outputPath, configTemplate);
-      console.log(chalk.green(`✅ Configuration file created at ${outputPath}`));
-      console.log(chalk.gray('Edit the file to customize validation settings'));
-      return true;
+      fs.writeFileSync(outputPath, configTemplate)
+      console.log(chalk.green(`✅ Configuration file created at ${outputPath}`))
+      console.log(chalk.gray('Edit the file to customize validation settings'))
+      return true
     } catch (error) {
-      console.error(chalk.red(`Failed to create config file: ${error.message}`));
-      return false;
+      console.error(chalk.red(`Failed to create config file: ${error.message}`))
+      return false
     }
   }
 
@@ -187,7 +187,7 @@ class ConfigManager {
       return {
         level: ruleConfig,
         enabled: ruleConfig !== 'off'
-      };
+      }
     }
 
     if (typeof ruleConfig === 'object') {
@@ -195,25 +195,25 @@ class ConfigManager {
         level: ruleConfig.level || 'error',
         enabled: ruleConfig.level !== 'off',
         ...ruleConfig
-      };
+      }
 
       // Apply context-specific overrides
       if (context.existingAppStore && ruleConfig.skipForExistingApps) {
-        processed.enabled = false;
+        processed.enabled = false
       }
 
       if (context.usesFastlane && ruleConfig.skipForFastlane) {
-        processed.enabled = false;
+        processed.enabled = false
       }
 
-      return processed;
+      return processed
     }
 
     return {
       level: 'error',
       enabled: true
-    };
+    }
   }
 }
 
-module.exports = ConfigManager;
+module.exports = ConfigManager

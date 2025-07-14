@@ -1,4 +1,4 @@
-const { AppStoreValidator } = require('../src/validator')
+const AppStoreValidator = require('../src/validator')
 const { SEVERITY } = require('../src/utils/constants')
 const fs = require('fs')
 const path = require('path')

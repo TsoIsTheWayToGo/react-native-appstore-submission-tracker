@@ -3,55 +3,55 @@ const {
   ValidationResult,
   SEVERITY,
   PRIVACY_PERMISSION_KEYS
-} = require('../utils/constants');
-const path = require('path');
-const fs = require('fs');
-const yauzl = require('yauzl');
+} = require('../utils/constants')
+const path = require('path')
+const fs = require('fs')
+const yauzl = require('yauzl')
 
 class PrivacyComplianceRule extends ValidationRule {
   constructor() {
-    super('privacy-compliance', 'Validates privacy compliance requirements');
+    super('privacy-compliance', 'Validates privacy compliance requirements')
   }
 
   async validate(validator) {
-    const results = [];
-    const plist = validator.getInfoPlist();
+    const results = []
+    const plist = validator.getInfoPlist()
 
-    if (!plist) return results;
+    if (!plist) return results
 
     // Enhanced privacy manifest detection
-    const manifestResult = await this.checkPrivacyManifest(validator);
+    const manifestResult = await this.checkPrivacyManifest(validator)
     if (manifestResult) {
-      results.push(manifestResult);
+      results.push(manifestResult)
     }
 
     // Check permission descriptions
-    results.push(...this.checkPermissionDescriptions(plist));
+    results.push(...this.checkPermissionDescriptions(plist))
 
     // Check for potential privacy-impacting usage
-    results.push(...this.checkPrivacyImpactingAPIs(plist));
+    results.push(...this.checkPrivacyImpactingAPIs(plist))
 
-    return results;
+    return results
   }
 
   async checkPrivacyManifest(validator) {
-    const buildPath = validator.getBuildPath();
+    const buildPath = validator.getBuildPath()
 
     try {
       if (buildPath.endsWith('.ipa')) {
-        const hasMainManifest = await this.checkIPAForPrivacyManifest(buildPath);
+        const hasMainManifest = await this.checkIPAForPrivacyManifest(buildPath)
         if (hasMainManifest) {
-          return null; // Found main app manifest
+          return null // Found main app manifest
         }
       } else if (buildPath.endsWith('.app')) {
-        const manifestPath = path.join(buildPath, 'PrivacyInfo.xcprivacy');
+        const manifestPath = path.join(buildPath, 'PrivacyInfo.xcprivacy')
         if (fs.existsSync(manifestPath)) {
-          return null; // Found manifest
+          return null // Found manifest
         }
       }
 
       // Check if this app actually needs a privacy manifest
-      const needsManifest = this.determineIfPrivacyManifestRequired(validator.getInfoPlist());
+      const needsManifest = this.determineIfPrivacyManifestRequired(validator.getInfoPlist())
 
       if (!needsManifest) {
         return new ValidationResult(
@@ -60,7 +60,7 @@ class PrivacyComplianceRule extends ValidationRule {
           'Privacy manifest not found, but may not be required',
           'Your app may not use privacy-impacting APIs that require a manifest',
           'Review if your app uses required reason APIs: https://developer.apple.com/documentation/bundleresources/privacy_manifest_files'
-        );
+        )
       }
 
       return new ValidationResult(
@@ -69,7 +69,7 @@ class PrivacyComplianceRule extends ValidationRule {
         'Privacy manifest file (PrivacyInfo.xcprivacy) not found',
         'Required for apps using privacy-impacting APIs as of May 2024',
         'Add PrivacyInfo.xcprivacy to your app bundle root directory'
-      );
+      )
     } catch (error) {
       return new ValidationResult(
         this.name,
@@ -77,7 +77,7 @@ class PrivacyComplianceRule extends ValidationRule {
         'Could not verify privacy manifest presence',
         `Error checking for privacy manifest: ${error.message}`,
         'Manually verify PrivacyInfo.xcprivacy exists in your app bundle'
-      );
+      )
     }
   }
 
@@ -85,37 +85,37 @@ class PrivacyComplianceRule extends ValidationRule {
     return new Promise((resolve, reject) => {
       yauzl.open(ipaPath, { lazyEntries: true }, (err, zipfile) => {
         if (err) {
-          reject(err);
-          return;
+          reject(err)
+          return
         }
 
-        let foundMainManifest = false;
+        let foundMainManifest = false
 
-        zipfile.readEntry();
+        zipfile.readEntry()
         zipfile.on('entry', (entry) => {
           // Look for main app privacy manifest (not SDK manifests)
           if (entry.fileName.match(/Payload\/[^/]+\.app\/PrivacyInfo\.xcprivacy$/)) {
-            foundMainManifest = true;
-            zipfile.close();
-            resolve(true);
-            return;
+            foundMainManifest = true
+            zipfile.close()
+            resolve(true)
+            return
           }
-          zipfile.readEntry();
-        });
+          zipfile.readEntry()
+        })
 
         zipfile.on('end', () => {
-          resolve(foundMainManifest);
-        });
+          resolve(foundMainManifest)
+        })
 
         zipfile.on('error', (err) => {
-          reject(err);
-        });
-      });
-    });
+          reject(err)
+        })
+      })
+    })
   }
 
   determineIfPrivacyManifestRequired(plist) {
-    if (!plist) return false;
+    if (!plist) return false
 
     // Check for privacy-sensitive permissions that often require manifests
     const privacySensitiveKeys = [
@@ -125,18 +125,18 @@ class PrivacyComplianceRule extends ValidationRule {
       'NSUserTrackingUsageDescription',
       'NSFaceIDUsageDescription',
       'NSContactsUsageDescription'
-    ];
+    ]
 
     // If app has privacy-sensitive permissions, it likely needs a manifest
-    return privacySensitiveKeys.some((key) => plist[key]);
+    return privacySensitiveKeys.some((key) => plist[key])
   }
 
   checkPermissionDescriptions(plist) {
-    const results = [];
+    const results = []
 
     for (const key of PRIVACY_PERMISSION_KEYS) {
       if (plist[key]) {
-        const description = plist[key];
+        const description = plist[key]
 
         // Check for overly short descriptions
         if (description.length < 30) {
@@ -148,7 +148,7 @@ class PrivacyComplianceRule extends ValidationRule {
               `Current: "${description}" (${description.length} characters)`,
               'Provide a clear, detailed explanation of why this permission is needed (minimum 30 characters)'
             )
-          );
+          )
         }
 
         // Check for generic/placeholder descriptions
@@ -158,7 +158,7 @@ class PrivacyComplianceRule extends ValidationRule {
           'to access location',
           'app needs this',
           'required for functionality'
-        ];
+        ]
 
         if (genericPhrases.some((phrase) => description.toLowerCase().includes(phrase))) {
           results.push(
@@ -169,16 +169,16 @@ class PrivacyComplianceRule extends ValidationRule {
               `Consider providing more specific explanation: "${description}"`,
               'Explain specifically how your app uses this permission'
             )
-          );
+          )
         }
       }
     }
 
-    return results;
+    return results
   }
 
   checkPrivacyImpactingAPIs(plist) {
-    const results = [];
+    const results = []
 
     // Check for potentially problematic location usage
     if (
@@ -193,11 +193,11 @@ class PrivacyComplianceRule extends ValidationRule {
           'Consider if always access is truly necessary for core functionality',
           'Use most restrictive location permission possible'
         )
-      );
+      )
     }
 
-    return results;
+    return results
   }
 }
 
-module.exports = PrivacyComplianceRule;
+module.exports = PrivacyComplianceRule

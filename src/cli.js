@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 
-const yargs = require('yargs');
-const chalk = require('chalk');
-const fs = require('fs');
-const path = require('path');
+const yargs = require('yargs')
+const chalk = require('chalk')
+const fs = require('fs')
+const path = require('path')
 
 // Import the AppStoreValidator class directly
-const AppStoreValidator = require('../src/validator');
-const packageJson = require('../package.json');
+const AppStoreValidator = require('../src/validator')
+const packageJson = require('../package.json')
 
 function setupCLI() {
   return yargs
@@ -74,10 +74,10 @@ function setupCLI() {
           .example(
             '$0 validate ./MyApp.ipa --ignore code-signing,assets',
             'Skip specific validation rules'
-          );
+          )
       },
-      async (argv) => {
-        await runValidation(argv);
+      async(argv) => {
+        await runValidation(argv)
       }
     )
     .command(
@@ -85,7 +85,7 @@ function setupCLI() {
       'List available validation rules',
       () => {},
       () => {
-        listRules();
+        listRules()
       }
     )
     .command(
@@ -96,29 +96,29 @@ function setupCLI() {
           describe: 'Overwrite existing configuration',
           type: 'boolean',
           default: false
-        });
+        })
       },
       (argv) => {
-        initConfig(argv.force);
+        initConfig(argv.force)
       }
     )
     .demandCommand(1, chalk.red('You must specify a command'))
     .strict()
-    .wrap(Math.min(120, yargs.terminalWidth()));
+    .wrap(Math.min(120, yargs.terminalWidth()))
 }
 
 async function runValidation(argv) {
-  const startTime = Date.now();
+  const startTime = Date.now()
 
   try {
-    console.log(chalk.blue.bold('🍎 React Native App Store Submission Tracker'));
-    console.log(chalk.gray(`Version ${packageJson.version}\n`));
+    console.log(chalk.blue.bold('React Native App Store Validator'))
+    console.log(chalk.gray(`Version ${packageJson.version}\n`))
 
     if (argv.verbose) {
-      console.log(chalk.gray(`Build Path: ${argv.buildPath}`));
-      console.log(chalk.gray(`Metadata: ${argv.metadata || 'Not provided'}`));
-      console.log(chalk.gray(`Output Format: ${argv.output}`));
-      console.log('');
+      console.log(chalk.gray(`Build Path: ${argv.buildPath}`))
+      console.log(chalk.gray(`Metadata: ${argv.metadata || 'Not provided'}`))
+      console.log(chalk.gray(`Output Format: ${argv.output}`))
+      console.log('')
     }
 
     // Parse CLI options into validator options
@@ -127,61 +127,61 @@ async function runValidation(argv) {
       output: argv.output,
       failOn: argv.failOn,
       configPath: argv.config
-    };
+    }
 
     // Handle ignore rules
     if (argv.ignore) {
-      validatorOptions.ignoreRules = argv.ignore.split(',').map((r) => r.trim());
+      validatorOptions.ignoreRules = argv.ignore.split(',').map((r) => r.trim())
     }
 
     // Handle specific rules
     if (argv.rules) {
-      const enabledRules = argv.rules.split(',').map((r) => r.trim());
-      validatorOptions.enabledRules = enabledRules;
+      const enabledRules = argv.rules.split(',').map((r) => r.trim())
+      validatorOptions.enabledRules = enabledRules
     }
 
     // Create validator instance
-    const validator = new AppStoreValidator(validatorOptions);
+    const validator = new AppStoreValidator(validatorOptions)
 
     // Run validation
-    const report = await validator.validate(argv.buildPath, argv.metadata);
+    const report = await validator.validate(argv.buildPath, argv.metadata)
 
     // Output results
     if (argv.outputFile) {
-      fs.writeFileSync(argv.outputFile, report);
-      console.log(chalk.green(`Results written to ${argv.outputFile}`));
+      fs.writeFileSync(argv.outputFile, report)
+      console.log(chalk.green(`Results written to ${argv.outputFile}`))
     } else {
-      console.log(report);
+      console.log(report)
     }
 
     // Show timing if verbose
     if (argv.verbose) {
-      const duration = Date.now() - startTime;
-      console.log(chalk.gray(`\nValidation completed in ${duration}ms`));
+      const duration = Date.now() - startTime
+      console.log(chalk.gray(`\nValidation completed in ${duration}ms`))
     }
 
     // Exit with appropriate code
-    const shouldFail = validator.shouldFail(argv.failOn);
-    process.exit(shouldFail ? 1 : 0);
+    const shouldFail = validator.shouldFail(argv.failOn)
+    process.exit(shouldFail ? 1 : 0)
   } catch (error) {
-    console.error(chalk.red('\n💥 Validation failed:'));
-    console.error(chalk.red(error.message));
+    console.error(chalk.red('\n💥 Validation failed:'))
+    console.error(chalk.red(error.message))
 
     if (argv.verbose) {
-      console.error(chalk.gray('\nStack trace:'));
-      console.error(chalk.gray(error.stack));
+      console.error(chalk.gray('\nStack trace:'))
+      console.error(chalk.gray(error.stack))
     }
 
-    console.error(chalk.gray('\nPlease report this issue at:'));
+    console.error(chalk.gray('\nPlease report this issue at:'))
     console.error(
       chalk.blue('https://github.com/yourusername/react-native-appstore-submission-tracker/issues')
-    );
-    process.exit(1);
+    )
+    process.exit(1)
   }
 }
 
 function listRules() {
-  console.log(chalk.blue.bold('📋 Available Validation Rules:\n'));
+  console.log(chalk.blue.bold('📋 Available Validation Rules:\n'))
 
   const rules = [
     {
@@ -200,25 +200,25 @@ function listRules() {
     { name: 'performance', description: 'Validates performance-related configurations' },
     { name: 'content-policy', description: 'Validates content policy compliance' },
     { name: 'metadata', description: 'Validates App Store metadata requirements' }
-  ];
+  ]
 
   rules.forEach((rule) => {
-    console.log(`${chalk.blue('•')} ${chalk.bold(rule.name)}`);
-    console.log(`  ${rule.description}\n`);
-  });
+    console.log(`${chalk.blue('•')} ${chalk.bold(rule.name)}`)
+    console.log(`  ${rule.description}\n`)
+  })
 
-  console.log(chalk.gray('Use --rules to run specific rules or --ignore to skip rules'));
-  console.log(chalk.gray('Example: --ignore "code-signing,assets"'));
+  console.log(chalk.gray('Use --rules to run specific rules or --ignore to skip rules'))
+  console.log(chalk.gray('Example: --ignore "code-signing,assets"'))
 }
 
 function initConfig(force) {
-  const configPath = path.join(process.cwd(), 'appstore-validator.config.js');
+  const configPath = path.join(process.cwd(), 'appstore-validator.config.js')
 
   if (fs.existsSync(configPath) && !force) {
     console.log(
       chalk.yellow(`Configuration file already exists at ${configPath}. Use --force to overwrite.`)
-    );
-    return;
+    )
+    return
   }
 
   const configTemplate = `module.exports = {
@@ -244,37 +244,37 @@ function initConfig(force) {
   // Fail threshold
   failOn: 'high' // critical, high, medium, low
 };
-`;
+`
 
-  fs.writeFileSync(configPath, configTemplate);
-  console.log(chalk.green(`✅ Configuration file created at ${configPath}`));
-  console.log(chalk.gray('Edit the file to customize validation settings'));
+  fs.writeFileSync(configPath, configTemplate)
+  console.log(chalk.green(`✅ Configuration file created at ${configPath}`))
+  console.log(chalk.gray('Edit the file to customize validation settings'))
 }
 
 // Handle uncaught errors gracefully
 process.on('uncaughtException', (error) => {
-  console.error(chalk.red('\n💥 Unexpected error occurred:'));
-  console.error(chalk.red(error.message));
-  console.error(chalk.gray('\nPlease report this issue at:'));
+  console.error(chalk.red('\n💥 Unexpected error occurred:'))
+  console.error(chalk.red(error.message))
+  console.error(chalk.gray('\nPlease report this issue at:'))
   console.error(
     chalk.blue('https://github.com/yourusername/react-native-appstore-submission-tracker/issues')
-  );
-  process.exit(1);
-});
+  )
+  process.exit(1)
+})
 
 process.on('unhandledRejection', (reason, _promise) => {
-  console.error(chalk.red('\n💥 Unhandled promise rejection:'));
-  console.error(chalk.red(reason));
-  console.error(chalk.gray('\nPlease report this issue at:'));
+  console.error(chalk.red('\n💥 Unhandled promise rejection:'))
+  console.error(chalk.red(reason))
+  console.error(chalk.gray('\nPlease report this issue at:'))
   console.error(
     chalk.blue('https://github.com/yourusername/react-native-appstore-submission-tracker/issues')
-  );
-  process.exit(1);
-});
+  )
+  process.exit(1)
+})
 
 // Run CLI if this file is executed directly
 if (require.main === module) {
-  setupCLI().parse();
+  setupCLI().parse()
 }
 
-module.exports = { setupCLI };
+module.exports = { setupCLI }

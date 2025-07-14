@@ -2,7 +2,7 @@ const { AppStoreValidator } = require("../src/validator");
 const path = require("path");
 
 async function basicExample() {
-  console.log("🍎 Basic App Store Validation Example\n");
+  console.log("Basic App Store Validation Example\n");
 
   // Create validator instance
   const validator = new AppStoreValidator({
@@ -23,7 +23,7 @@ async function basicExample() {
     console.log("✅ Example completed successfully");
   } catch (error) {
     console.error("❌ Example failed:", error.message);
-    console.log("\n💡 To run this example with a real app:");
+    console.log('\n🛠️ To run this example with a real app:');
     console.log("1. Build your React Native app for iOS");
     console.log("2. Update the appPath variable above");
     console.log("3. Run: node examples/basic-usage.js");

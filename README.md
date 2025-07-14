@@ -1,15 +1,14 @@
-# React Native App Store Submission Tracker
+# React Native Appstore Validator
 
 [![npm version](https://badge.fury.io/js/rn-appstore-validator.svg)](https://badge.fury.io/js/rn-appstore-validator)
 [![CI](https://github.com/TsoIsTheWayToGo/rn-appstore-validator/workflows/CI/badge.svg)](https://github.com/TsoIsTheWayToGo/rn-appstore-validator/actions)
-[![codecov](https://codecov.io/gh/yourusername/rn-appstore-validator/branch/main/graph/badge.svg)](https://codecov.io/gh/yourusername/rn-appstore-validator)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-> **Catch App Store rejection issues before submission** 🍎
+> **Catch App Store rejection issues before submission**
 
 A comprehensive validation tool that checks React Native builds against Apple App Store submission requirements to catch potential rejection issues before you submit. Think of it as "ESLint for App Store compliance."
 
-## 🚀 Why This Tool?
+## Why This Tool?
 
 Apple rejects about **40% of iOS app submissions** on first attempt. Most rejections are due to easily preventable issues like:
 
@@ -21,7 +20,7 @@ Apple rejects about **40% of iOS app submissions** on first attempt. Most reject
 
 This tool catches these issues **before submission**, saving you days of review cycles.
 
-## 📦 Installation
+## Installation
 
 ### NPM/Yarn
 ```bash
@@ -37,29 +36,34 @@ npm install --save-dev rn-appstore-validator
 yarn add --dev rn-appstore-validator
 ```
 
-## 🛠 Quick Start
+---
 
-### Basic Usage
+## Quick Start
+
+### 1. Build Your `.ipa`
+
+Run your iOS build process using Xcode, Fastlane, or EAS. Make sure you have an **`.ipa` file** ready.
+
+### 2. Validate the `.ipa` File
+
 ```bash
-# Validate .app bundle
-rn-appstore-validator validate ./ios/build/Build/Products/Release-iphoneos/MyApp.app
-
-# Validate .ipa file  
-rn-appstore-validator validate ./MyApp.ipa
-
-# With metadata validation
-rn-appstore-validator validate ./MyApp.ipa --metadata ./metadata.json --verbose
+# Replace this path with the path to your actual .ipa file
+rn-appstore-validator validate ./path/to/MyApp.ipa
 ```
 
-### CI/CD Integration
-```yaml
-# GitHub Actions
-- name: Validate App Store Compliance
-  run: |
-    npx rn-appstore-validator validate ./MyApp.ipa --output junit
+### 3. Optional: Add Metadata and Verbose Output
+
+```bash
+rn-appstore-validator validate ./path/to/MyApp.ipa \
+  --metadata ./metadata.json \
+  --verbose
 ```
 
-## 📋 What It Checks
+> **Note**: The validator must be run on a **built `.ipa` file**. It does not analyze raw source code or projects.
+
+---
+
+## What It Checks
 
 ### ✅ Core Validations
 - **Info.plist Configuration**: Bundle ID, versioning, iOS requirements
@@ -75,7 +79,7 @@ rn-appstore-validator validate ./MyApp.ipa --metadata ./metadata.json --verbose
 ### 🔍 Example Output
 
 ```
-🍎 App Store Submission Validation Report
+App Store Submission Validation Report
 ══════════════════════════════════════════════════
 
 Summary:
@@ -103,7 +107,34 @@ HIGH ISSUES (2):
   💡 Fix: Implement in-app account deletion or provide deletion link
 ```
 
-## 🔧 Advanced Usage
+## Core Commands
+
+### `validate` - Main Validation Command
+
+Validates your React Native build against App Store submission requirements.
+
+```bash
+rn-appstore-validator validate <buildPath> [options]
+```
+
+**Parameters:**
+- `<buildPath>` - Path to your .app bundle or .ipa file (required)
+
+**Options:**
+
+| Option | Alias | Description | Default |
+|--------|--------|-------------|---------|
+| `--metadata` | `-m` | Path to metadata JSON file | - |
+| `--output` | `-o` | Output format: `console`, `json`, `junit` | `console` |
+| `--verbose` | `-v` | Enable verbose output with detailed information | `false` |
+| `--rules` | `-r` | Comma-separated list of specific rules to run | All rules |
+| `--ignore` | `-i` | Comma-separated list of rules to skip | None |
+| `--fail-on` | - | Severity level to fail on: `critical`, `high`, `medium`, `low` | `high` |
+| `--output-file` | - | Write output to file instead of stdout | - |
+| `--config` | `-c` | Path to custom configuration file | - |
+
+
+## Advanced Usage
 
 ### Custom Configuration
 ```javascript
@@ -148,65 +179,8 @@ console.log(report);
 }
 ```
 
-## 🚀 CI/CD Integration Examples
 
-### GitHub Actions
-```yaml
-name: App Store Validation
-on: [push, pull_request]
-
-jobs:
-  validate:
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v3
-      
-      - name: Build iOS App
-        run: |
-          # Your build commands here
-          
-      - name: Validate App Store Compliance
-        run: |
-          npx rn-appstore-validator validate \
-            ./ios/build/MyApp.ipa \
-            --metadata ./app-metadata.json \
-            --output junit \
-            --verbose
-            
-      - name: Publish Results
-        uses: dorny/test-reporter@v1
-        if: always()
-        with:
-          name: App Store Validation
-          path: validation-results.xml
-          reporter: java-junit
-```
-
-### GitLab CI
-```yaml
-validate_appstore:
-  stage: test
-  script:
-    - npm install -g rn-appstore-validator
-    - rn-appstore-validator validate ./MyApp.ipa --output json > validation.json
-  artifacts:
-    reports:
-      junit: validation.json
-    when: always
-```
-
-### Bitrise
-```yaml
-- script@1:
-    title: App Store Validation
-    inputs:
-    - content: |
-        #!/bin/bash
-        npm install -g rn-appstore-validator
-        rn-appstore-validator validate $BITRISE_IPA_PATH --verbose
-```
-
-## 🔌 Extending with Custom Rules
+## Extending with Custom Rules
 
 Create custom validation rules for your specific needs:
 
@@ -240,14 +214,14 @@ class CompanyBrandingRule extends ValidationRule {
 module.exports = CompanyBrandingRule;
 ```
 
-## 📚 Documentation
+## Documentation
 
 - [API Documentation](./docs/API.md)
 - [Available Rules](./docs/RULES.md) 
 - [Contributing Guide](./docs/CONTRIBUTING.md)
 - [Examples](./examples/)
 
-## 🤝 Contributing
+## Contributing
 
 We welcome contributions! This tool is most valuable when it stays current with Apple's evolving guidelines.
 
@@ -269,7 +243,7 @@ npm test
 npm run lint
 ```
 
-## 🐛 Common Issues & Solutions
+## Common Issues & Solutions
 
 ### Issue: "Could not parse Info.plist"
 **Solution**: Ensure your build is complete and Info.plist exists in the app bundle.
@@ -280,7 +254,7 @@ npm run lint
 ### Issue: "Privacy manifest not found"
 **Solution**: Add `PrivacyInfo.xcprivacy` to your Xcode project (required for new apps as of 2024).
 
-## 📊 Roadmap
+## Roadmap
 
 - [ ] **Android Support**: Google Play validation rules
 - [ ] **Web Dashboard**: Online validation service  
@@ -289,11 +263,11 @@ npm run lint
 - [ ] **Performance Checks**: Binary size, launch time validation
 - [ ] **Accessibility**: A11y compliance checking
 
-## 📄 License
+## License
 
 MIT © [TsoIsTheWayToGo](https://github.com/TsoIsTheWayToGo)
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - Inspired by the React Native community's need for better App Store tooling
 - Built with lessons learned from thousands of App Store submissions

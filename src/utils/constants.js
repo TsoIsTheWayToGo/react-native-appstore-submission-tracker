@@ -12,12 +12,13 @@ const SEVERITY = {
 }
 
 class ValidationResult {
-  constructor(rule, severity, message, details = null, fix = null) {
+  constructor(rule, severity, message, details = null, fix = null, fixType = 'fix') {
     this.rule = rule
     this.severity = severity
     this.message = message
     this.details = details
     this.fix = fix
+    this.fixType = fixType // 'fix' or 'manual'
     this.timestamp = new Date().toISOString()
   }
 
@@ -28,11 +29,11 @@ class ValidationResult {
       message: this.message,
       details: this.details,
       fix: this.fix,
+      fixType: this.fixType,
       timestamp: this.timestamp
     }
   }
 }
-
 // Base class for validation rules
 class ValidationRule {
   constructor(name, description) {
